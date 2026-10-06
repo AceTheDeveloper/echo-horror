@@ -1,0 +1,328 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
+    />
+    <meta
+      name="description"
+      content="EchoHorror: a sound-driven horror maze. You are blind in the dark — send out echoes to see, but every sound draws the hunters."
+    />
+    <meta name="theme-color" content="#000000" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23000'/%3E%3Ccircle cx='16' cy='16' r='4' fill='%23c33'/%3E%3Ccircle cx='16' cy='16' r='9' fill='none' stroke='%23c33' stroke-width='2' opacity='.7'/%3E%3Ccircle cx='16' cy='16' r='14' fill='none' stroke='%23c33' stroke-width='1.5' opacity='.35'/%3E%3C/svg%3E"
+    />
+    <link rel="stylesheet" href="style.css" />
+    <script src="index.js" defer></script>
+    <title>EchoHorror: The Echo Maze</title>
+  </head>
+  <body>
+    <div id="game-container">
+      <canvas id="gameCanvas"></canvas>
+
+      <!-- Jumpscare Overlay (hidden until player death) -->
+      <div id="jumpscare" class="hidden">
+        <div id="jumpscare-sprite"></div>
+      </div>
+
+      <!-- Pause / Settings / Mute (always reachable) -->
+      <div id="system-buttons">
+        <button id="pause-btn" class="sys-btn" title="Pause" aria-label="Pause">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M7 5h3.4v14H7zM13.6 5H17v14h-3.4z" fill="currentColor" stroke="none" />
+          </svg>
+        </button>
+        <button
+          id="settings-btn"
+          class="sys-btn"
+          title="Settings"
+          aria-label="Settings"
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="12" r="8.4" stroke-width="3" stroke-dasharray="3.3 3.3" />
+            <circle cx="12" cy="12" r="6.2" />
+            <circle cx="12" cy="12" r="2.2" />
+          </svg>
+        </button>
+        <button id="mute-btn" class="sys-btn" title="Toggle sound" aria-label="Toggle sound">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M4 9.5v5h3.6L13 19V5L7.6 9.5z" fill="currentColor" />
+            <path class="wave" d="M16.2 9a4.2 4.2 0 0 1 0 6M18.8 6.4a8 8 0 0 1 0 11.2" />
+            <path class="slash" d="M16.5 9.5l4.5 5M21 9.5l-4.5 5" />
+          </svg>
+          <span id="mute-label" class="sys-label">Sound on</span>
+        </button>
+      </div>
+
+      <!-- Short status messages and one-time tutorial hints -->
+      <div id="toast" class="hidden"></div>
+      <!-- Accessibility captions for important sounds (optional) -->
+      <div id="caption" class="hidden"></div>
+
+      <!-- Touch Controls (mobile only — shown via CSS pointer:coarse query) -->
+      <div id="touch-controls">
+        <!-- Floating joystick: the whole left half is the touch area, the ring
+             appears wherever the thumb lands and rests bottom-left otherwise. -->
+        <div id="touch-joystick-zone">
+          <div id="touch-joystick-base">
+            <div id="touch-joystick-knob"></div>
+          </div>
+        </div>
+        <div id="touch-action-buttons">
+          <div id="touch-item-buttons">
+            <button id="touch-heart-btn" class="touch-btn small" aria-label="Heart Relic">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path
+                  d="M12 20.5s-7.5-4.6-7.5-10A4.3 4.3 0 0 1 12 7.6a4.3 4.3 0 0 1 7.5 2.9c0 5.4-7.5 10-7.5 10z"
+                />
+              </svg>
+              <span class="touch-count" id="touch-cnt-heart">0</span>
+            </button>
+            <button id="touch-eye-btn" class="touch-btn small" aria-label="Eye Totem">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12z" />
+                <circle cx="12" cy="12" r="3" />
+              </svg>
+              <span class="touch-count" id="touch-cnt-eye">0</span>
+            </button>
+            <button id="touch-candle-btn" class="touch-btn small" aria-label="Place candle">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <rect x="8.5" y="11" width="7" height="9.5" rx="1" />
+                <path d="M12 3c2.1 2.3 2.7 3.8 0 6.2-2.7-2.4-2.1-3.9 0-6.2z" />
+              </svg>
+              <span class="touch-count" id="touch-cnt-candle">0</span>
+            </button>
+          </div>
+          <div class="touch-main-row">
+            <button id="touch-interact-btn" class="touch-btn" aria-label="Interact">USE</button>
+            <button id="touch-pulse-btn" class="touch-btn" aria-label="Send echo pulse">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <circle cx="12" cy="12" r="1.8" fill="currentColor" />
+                <path
+                  d="M8.6 8.6a4.8 4.8 0 0 0 0 6.8M15.4 8.6a4.8 4.8 0 0 1 0 6.8M5.6 5.6a9 9 0 0 0 0 12.8M18.4 5.6a9 9 0 0 1 0 12.8"
+                />
+              </svg>
+              <span>Echo</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- HUD Layer -->
+      <div id="hud">
+        <div class="hud-top">
+          <div class="hud-box">
+            <div class="hud-title">Level</div>
+            <div class="hud-value" id="hud-level">1 / 6</div>
+          </div>
+          <div class="hud-box">
+            <div class="hud-title">Keys Found</div>
+            <div class="hud-value" id="hud-keys">0 / 3</div>
+          </div>
+          <div class="hud-box">
+            <div class="hud-title">Threat Level</div>
+            <div class="hud-value" id="hud-threat" style="color: #4a4">LOW</div>
+          </div>
+        </div>
+
+        <div id="interact-prompt" class="hidden">Press [E] to Interact</div>
+
+        <div class="hud-bottom">
+          <div class="inventory-bar">
+            <div class="inv-slot" id="slot-key" title="Key pieces">
+              KEY<span class="inv-count" id="cnt-key">0</span>
+            </div>
+            <div class="inv-slot" id="slot-candle" title="Press C to place">
+              CNDL<span class="inv-count" id="cnt-candle">0</span>
+            </div>
+            <div class="inv-slot" id="slot-heart" title="Press 1 to use">
+              HRT<span class="inv-count" id="cnt-heart">0</span>
+            </div>
+            <div class="inv-slot" id="slot-eye" title="Press 2 to use">
+              EYE<span class="inv-count" id="cnt-eye">0</span>
+            </div>
+          </div>
+          <div class="hud-box hud-energy">
+            <div class="hud-title" id="energy-title">Sound Energy [SPACE]</div>
+            <div class="energy-bar-track">
+              <div class="energy-bar-fill" id="energy-fill"></div>
+            </div>
+          </div>
+          <div class="hud-box hud-controls">
+            <div class="hud-title">Controls</div>
+            <div id="controls-hint">
+              [WASD] Move &bull; [SPACE] Echo &bull; [1/2] Heart/Eye &bull; [C]
+              Candle &bull; [E] Interact &bull; [P] Pause
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Difficulty picker (the title screen itself is drawn on the canvas) -->
+      <div id="menu-overlay" class="overlay">
+        <div class="menu-shell">
+          <div class="menu-copy">
+            <h1>EchoHorror</h1>
+            <p class="menu-subtitle">The Echo Maze</p>
+            <p>
+              You are trapped in near-total blackout. There are no maps. Your
+              dim flashlight only reveals what's right around you — the full
+              maze layout is only ever revealed when sound echoes off the stone
+              walls.
+            </p>
+            <p>
+              <strong class="accent">Beware:</strong> Sound Pulses cost energy
+              — watch your bar. Blind beasts roam the dark, hunting purely by
+              noise. Candles burn them; the gate hates to be opened.
+            </p>
+            <p class="menu-tip">
+              <strong>Tip:</strong> Listen for humming Echo Stones. Repeat their
+              melody to earn a key piece &mdash; but every note you play is
+              noise.
+            </p>
+            <p class="menu-note">
+              Best played with sound on — this game relies on audio. Prefer to
+              see it instead? Turn on "Visual sound cues" in Settings (the gear,
+              top-right).
+            </p>
+          </div>
+
+          <div class="menu-pick">
+            <div class="hud-title">
+              Select difficulty<span class="kbd-only">
+                &bull; press 1 / 2 / 3 &bull; Esc to go back</span
+              >
+            </div>
+            <div class="btn-group">
+              <button class="diff-btn" data-diff="EASY">
+                Easy<small>1 hunter &bull; wide echo &bull; bright light</small>
+              </button>
+              <button class="diff-btn" data-diff="MEDIUM">
+                Medium<small>2 hunters &bull; balanced</small>
+              </button>
+              <button class="diff-btn" data-diff="HARD">
+                Hard<small>3 fast hunters &bull; short echo &bull; dim light</small>
+              </button>
+            </div>
+            <div class="btn-group">
+              <button id="continue-btn" class="hidden">Continue</button>
+              <button id="menu-back" class="ghost-btn">Back</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Story / Cutscene Overlay -->
+      <div id="story-overlay" class="overlay hidden">
+        <h2 id="story-title" class="accent"></h2>
+        <p id="story-text"></p>
+        <button id="story-btn">Continue</button>
+      </div>
+
+      <!-- Sound Puzzle: The Echo Stone (hidden until the player touches one) -->
+      <div id="sound-puzzle" class="hidden">
+        <div class="sp-title">THE ECHO STONE</div>
+        <div id="sp-status">Listen closely...</div>
+        <div id="sp-dots"></div>
+        <div class="sp-buttons">
+          <button class="sp-tone locked" data-tone="0">
+            1<span>LOW</span>
+          </button>
+          <button class="sp-tone locked" data-tone="1">
+            2<span>MID</span>
+          </button>
+          <button class="sp-tone locked" data-tone="2">
+            3<span>HIGH</span>
+          </button>
+        </div>
+        <div class="sp-actions">
+          <button id="sp-replay">Replay <span class="kbd-only">[R]</span></button>
+          <button id="sp-leave">Leave <span class="kbd-only">[E]</span></button>
+        </div>
+      </div>
+
+      <!-- Note Reading Modal -->
+      <div id="note-modal" class="hidden">
+        <div id="note-text"></div>
+        <button id="note-close" style="width: 100%">
+          Close <span class="kbd-only">[E]</span>
+        </button>
+      </div>
+
+      <!-- Settings: volume, accessibility, key bindings -->
+      <div id="settings-panel" class="overlay hidden">
+        <div class="settings-box">
+          <h2>Settings</h2>
+
+          <div class="settings-group">
+            <div class="hud-title">Volume</div>
+            <label class="setting-row"
+              >Music
+              <input type="range" id="mix-music" min="0" max="1.5" step="0.05"
+            /></label>
+            <label class="setting-row"
+              >Whispers
+              <input type="range" id="mix-whisper" min="0" max="1.5" step="0.05"
+            /></label>
+            <label class="setting-row"
+              >Footsteps
+              <input type="range" id="mix-steps" min="0" max="1.5" step="0.05"
+            /></label>
+            <label class="setting-row"
+              >Echo Stone sounds
+              <input type="range" id="mix-puzzle" min="0" max="1.5" step="0.05"
+            /></label>
+          </div>
+
+          <div class="settings-group">
+            <div class="hud-title">Accessibility</div>
+            <label class="setting-row check"
+              ><input type="checkbox" id="opt-cues" /> Visual sound cues
+              (captions + arrows toward hunters and Echo Stones)</label
+            >
+          </div>
+
+          <div class="settings-group kbd-only">
+            <div class="hud-title">
+              Keys (movement is always WASD / arrow keys)
+            </div>
+            <div id="bind-list"></div>
+          </div>
+
+          <div class="settings-actions">
+            <button id="settings-reset-keys" class="kbd-only">Reset keys</button>
+            <button id="settings-reset-hints">Show hints again</button>
+            <button id="settings-close">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Phones and tablets must be held sideways: the maze is square and the
+         thumb controls live in the side margins. Shown by CSS in portrait. -->
+    <div id="rotate-overlay" role="alert" aria-live="assertive">
+      <div class="rotate-art" aria-hidden="true">
+        <span class="ring r1"></span>
+        <span class="ring r2"></span>
+        <span class="ring r3"></span>
+        <svg class="phone" viewBox="0 0 48 80">
+          <rect x="4" y="2" width="40" height="76" rx="7" />
+          <rect x="9" y="10" width="30" height="56" rx="2" class="screen" />
+          <circle cx="24" cy="72" r="2" class="dot" />
+        </svg>
+      </div>
+      <h2>Turn your device sideways</h2>
+      <p>
+        EchoHorror is played in landscape so the whole maze and your controls
+        fit on screen. The game is paused until you rotate.
+      </p>
+      <p class="rotate-tip">Nothing happens? Switch off rotation lock in your quick settings.</p>
+    </div>
+  </body>
+</html>

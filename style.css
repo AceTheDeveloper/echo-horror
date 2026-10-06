@@ -1,0 +1,1451 @@
+/* ==========================================================================
+   EchoHorror — styles
+   Visual idea: everything is an instrument in the dark. Thin phosphor-red
+   lines, one accent colour, and sonar rings wherever the player touches.
+   Touch layout: landscape only. The square maze fills the screen height and
+   the thumb controls live in the side margins beside it.
+   ========================================================================== */
+
+:root {
+  --bg: #000;
+  --ink: #eee;
+  --ink-dim: #aaa;
+  --ink-faint: #888;
+  --line: #333;
+  --blood: #c33;
+  --blood-glow: rgba(204, 51, 51, 0.5);
+  --sonar: #6cf;
+  --panel: rgba(0, 0, 0, 0.65);
+  --mono:
+    "Cascadia Mono", "SF Mono", "Roboto Mono", Menlo, Consolas, "Courier New",
+    Courier, monospace;
+
+  /* Device safe areas (notch / home indicator). Absolute-positioned children
+     do not inherit the container's padding, so they use these directly. */
+  --sat: env(safe-area-inset-top, 0px);
+  --sar: env(safe-area-inset-right, 0px);
+  --sab: env(safe-area-inset-bottom, 0px);
+  --sal: env(safe-area-inset-left, 0px);
+
+  --edge: 20px; /* gap between UI and the screen edge */
+
+  /* Touch control sizes scale with the screen height so they fit any phone */
+  --joy: clamp(104px, 36vh, 150px);
+  --btn-echo: clamp(72px, 23vh, 98px);
+  --btn-use: clamp(46px, 14vh, 58px);
+  --btn-item: clamp(40px, 11.5vh, 50px);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body,
+html {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: var(--bg);
+  font-family: var(--mono);
+  color: var(--ink);
+  /* Mobile: kill pull-to-refresh, pinch-zoom, and rubber-band scrolling so
+     touch gestures always reach the game instead of the browser chrome. */
+  touch-action: none;
+  overscroll-behavior: none;
+  -webkit-user-select: none;
+  -webkit-text-size-adjust: 100%;
+}
+
+#game-container {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh; /* falls back to 100vh on browsers without dvh support */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* Respect notches/home-indicators on modern phones */
+  padding: var(--sat) var(--sar) var(--sab) var(--sal);
+}
+
+canvas {
+  display: block;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.9);
+  background: #000;
+  touch-action: none; /* let JS handle every touch — no native scroll/zoom */
+}
+
+/* UI Overlay Layer */
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  justify-content: safe center; /* never clip the top of a tall panel */
+  align-items: center;
+  background: rgba(0, 0, 0, 0.92);
+  z-index: 10;
+  transition: opacity 0.5s ease;
+  overflow-y: auto;
+  padding: max(16px, var(--sat)) max(16px, var(--sar)) max(16px, var(--sab))
+    max(16px, var(--sal));
+}
+
+.hidden {
+  display: none !important;
+}
+
+.accent {
+  color: var(--blood);
+}
+
+h1 {
+  font-size: 3rem;
+  letter-spacing: 0.3rem;
+  color: var(--blood);
+  text-shadow:
+    0 0 10px #f00,
+    0 0 20px #800;
+  margin-bottom: 2rem;
+  text-transform: uppercase;
+  text-align: center;
+}
+
+h2 {
+  font-size: 1.8rem;
+  color: var(--ink-dim);
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+p {
+  max-width: 650px;
+  text-align: center;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+  color: #ccc;
+  font-size: 1.05rem;
+}
+
+.btn-group {
+  display: flex;
+  gap: 15px;
+  margin-top: 1rem;
+}
+
+button {
+  background: #111;
+  color: #ddd;
+  border: 1px solid #444;
+  padding: 12px 28px;
+  font-family: inherit;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  touch-action: manipulation;
+}
+
+/* Hover only where a real pointer exists — on touch it "sticks" after a tap */
+@media (hover: hover) {
+  button:hover {
+    background: #2a0808;
+    border-color: var(--blood);
+    color: #fff;
+    box-shadow: 0 0 12px var(--blood-glow);
+  }
+}
+
+button:active {
+  background: #2a0808;
+  border-color: var(--blood);
+}
+
+:focus-visible {
+  outline: 2px solid var(--sonar);
+  outline-offset: 2px;
+}
+
+/* Keyboard-only hints (key names, Esc...) make no sense on a touchscreen */
+@media (hover: none) and (pointer: coarse) {
+  .kbd-only {
+    display: none !important;
+  }
+}
+
+/* ---------------- HUD ---------------- */
+#hud {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: calc(var(--edge) + var(--sat)) calc(var(--edge) + var(--sar))
+    calc(var(--edge) + var(--sab)) calc(var(--edge) + var(--sal));
+}
+
+.hud-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 100%;
+}
+
+.hud-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  width: 100%;
+}
+
+.hud-box {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  padding: 10px 15px;
+  border-radius: 4px;
+  color: var(--ink-faint);
+  font-size: 0.9rem;
+}
+
+.hud-title {
+  color: var(--ink-faint);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.hud-value {
+  color: var(--ink);
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+#controls-hint {
+  font-size: 0.75rem;
+  color: var(--ink-dim);
+}
+
+.inventory-bar {
+  display: flex;
+  gap: 10px;
+  background: rgba(0, 0, 0, 0.7);
+  padding: 8px;
+  border: 1px solid #222;
+}
+
+.inv-slot {
+  width: 48px;
+  height: 48px;
+  border: 1px dashed #444;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 0.75rem;
+  color: #666;
+  position: relative;
+  background: rgba(10, 10, 10, 0.8);
+}
+
+.inv-slot.active {
+  border-style: solid;
+  border-color: var(--blood);
+  color: #fff;
+}
+
+.inv-count {
+  position: absolute;
+  bottom: 2px;
+  right: 4px;
+  font-size: 0.7rem;
+  color: #fff;
+}
+
+#interact-prompt {
+  position: absolute;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: min(90vw, 560px);
+  text-align: center;
+  background: rgba(20, 0, 0, 0.85);
+  border: 1px solid var(--blood);
+  color: #fff;
+  padding: 8px 16px;
+  font-size: 0.9rem;
+  letter-spacing: 1px;
+  animation: pulse-border 1.5s infinite;
+}
+
+@keyframes pulse-border {
+  0% {
+    border-color: var(--blood);
+  }
+  50% {
+    border-color: #611;
+  }
+  100% {
+    border-color: var(--blood);
+  }
+}
+
+.energy-bar-track {
+  width: 170px;
+  height: 14px;
+  background: rgba(0, 0, 0, 0.6);
+  border: 1px solid #444;
+  margin-top: 4px;
+  position: relative;
+  overflow: hidden;
+}
+
+.energy-bar-fill {
+  height: 100%;
+  width: 100%;
+  background: linear-gradient(90deg, #2a6, #4d8);
+  transition:
+    width 0.12s linear,
+    background 0.25s ease;
+}
+
+.energy-bar-fill.denied {
+  animation: energy-denied-flash 0.25s ease;
+}
+
+@keyframes energy-denied-flash {
+  0% {
+    filter: brightness(1);
+  }
+  50% {
+    filter: brightness(2.2);
+  }
+  100% {
+    filter: brightness(1);
+  }
+}
+
+/* Reading Modal */
+#note-modal {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #111;
+  border: 2px solid #555;
+  padding: 30px;
+  max-width: 500px;
+  max-height: calc(100% - 24px);
+  overflow-y: auto;
+  width: 90%;
+  z-index: 20;
+  box-shadow: 0 0 30px #000;
+  color: #ddd;
+  line-height: 1.8;
+}
+
+#note-text {
+  font-family: var(--mono);
+  font-size: 1rem;
+  white-space: pre-wrap;
+  margin-bottom: 20px;
+  color: #d1c7bd;
+}
+
+/* ---------------- Jumpscare ---------------- */
+#jumpscare {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 999;
+  background: #000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+#jumpscare.jumpscare-active {
+  animation: jumpscare-flash 0.12s steps(1) infinite;
+}
+
+@keyframes jumpscare-flash {
+  0% {
+    background: #000;
+  }
+  25% {
+    background: #6b0000;
+  }
+  50% {
+    background: #000;
+  }
+  75% {
+    background: #a00000;
+  }
+  100% {
+    background: #000;
+  }
+}
+
+#jumpscare-sprite {
+  width: 70vmin;
+  height: 70vmin;
+  image-rendering: pixelated;
+  filter: drop-shadow(0 0 40px #f00) brightness(1.3) contrast(1.4);
+  animation: jumpscare-pop 0.65s cubic-bezier(0.2, 1.4, 0.5, 1) forwards;
+}
+
+/* CSS-only fallback face, shown until/unless the sprite sheet is ready */
+#jumpscare-sprite:not(.has-sprite)::before {
+  content: "";
+  display: block;
+  width: 100%;
+  height: 100%;
+  background:
+    radial-gradient(circle at 32% 40%, #fff 0 6%, transparent 7%),
+    radial-gradient(circle at 68% 40%, #fff 0 6%, transparent 7%),
+    radial-gradient(ellipse at 50% 75%, #300 0 22%, transparent 23%), #111;
+  border-radius: 45%;
+  box-shadow: 0 0 60px 20px #f00 inset;
+}
+
+@keyframes jumpscare-pop {
+  0% {
+    transform: scale(0.2);
+    opacity: 0;
+  }
+  15% {
+    transform: scale(1.3);
+    opacity: 1;
+  }
+  30% {
+    transform: scale(0.95) rotate(-3deg);
+  }
+  45% {
+    transform: scale(1.1) rotate(3deg);
+  }
+  60% {
+    transform: scale(1) rotate(-2deg);
+  }
+  100% {
+    transform: scale(1.05) rotate(0deg);
+  }
+}
+
+@keyframes screen-shake {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  10% {
+    transform: translate(-10px, 6px);
+  }
+  20% {
+    transform: translate(8px, -8px);
+  }
+  30% {
+    transform: translate(-6px, 10px);
+  }
+  40% {
+    transform: translate(10px, 4px);
+  }
+  50% {
+    transform: translate(-8px, -6px);
+  }
+  60% {
+    transform: translate(6px, 8px);
+  }
+  70% {
+    transform: translate(-10px, -4px);
+  }
+  80% {
+    transform: translate(8px, 6px);
+  }
+  90% {
+    transform: translate(-4px, -8px);
+  }
+}
+
+body.screen-shake {
+  animation: screen-shake 0.08s linear infinite;
+}
+
+/* ---------------- Pause / Settings / Mute buttons ---------------- */
+#system-buttons {
+  position: absolute;
+  top: calc(90px + var(--sat));
+  right: calc(var(--edge) + var(--sar));
+  z-index: 15;
+  pointer-events: auto;
+  display: flex;
+  gap: 6px;
+}
+
+.sys-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  font-size: 0.85rem;
+  letter-spacing: 1px;
+  background: rgba(10, 10, 10, 0.8);
+}
+
+.sys-btn svg {
+  width: 18px;
+  height: 18px;
+  flex: none;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.sys-label {
+  text-transform: none;
+  letter-spacing: 0.5px;
+}
+
+/* Speaker glyph: waves when sound is on, a slash when muted */
+#mute-btn .slash,
+#mute-btn.is-muted .wave {
+  display: none;
+}
+
+#mute-btn.is-muted .slash {
+  display: inline;
+}
+
+#mute-btn.is-muted {
+  color: #c88;
+}
+
+/* ---------------- Toast (status line + one-time hints) ---------------- */
+#toast {
+  position: absolute;
+  top: calc(88px + var(--sat));
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 40; /* above the settings panel (30) so rebinding errors show */
+  max-width: min(92vw, 560px);
+  padding: 10px 16px;
+  text-align: center;
+  font-size: 0.9rem;
+  line-height: 1.45;
+  color: #f0e6d8;
+  background: rgba(15, 8, 8, 0.9);
+  border: 1px solid #733;
+  box-shadow: 0 0 18px rgba(0, 0, 0, 0.8);
+  pointer-events: none;
+}
+
+/* ---------------- Sound captions (accessibility) ---------------- */
+#caption {
+  position: absolute;
+  bottom: 110px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 14;
+  padding: 4px 12px;
+  font-size: 0.95rem;
+  font-style: italic;
+  color: #cfe;
+  background: rgba(0, 0, 0, 0.7);
+  border-left: 3px solid var(--sonar);
+  pointer-events: none;
+}
+
+/* ---------------- Settings panel ---------------- */
+#settings-panel {
+  z-index: 30;
+}
+
+.settings-box {
+  margin: auto; /* centres it, but still lets a short screen scroll */
+  width: min(94vw, 520px);
+  padding: 20px 24px;
+  background: #0b0b0e;
+  border: 2px solid #446;
+  box-shadow: 0 0 30px #000;
+}
+
+.settings-box h2 {
+  text-align: center;
+  color: var(--blood);
+}
+
+.settings-group {
+  margin-bottom: 16px;
+}
+
+.setting-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-top: 8px;
+  font-size: 0.9rem;
+  color: #ccc;
+}
+
+.setting-row.check {
+  justify-content: flex-start;
+  line-height: 1.4;
+}
+
+.setting-row input[type="range"] {
+  width: 55%;
+  accent-color: var(--blood);
+}
+
+.bind-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 6px;
+  font-size: 0.9rem;
+  color: #ccc;
+}
+
+.bind-row button {
+  min-width: 130px;
+  padding: 5px 10px;
+  font-size: 0.85rem;
+}
+
+.settings-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+}
+
+.settings-actions button {
+  padding: 8px 14px;
+  font-size: 0.8rem;
+}
+
+/* ---------------- Difficulty Select (menu overlay) ---------------- */
+#menu-overlay {
+  background: #000; /* solid, so the canvas title doesn't show through */
+}
+
+.menu-shell {
+  margin: auto;
+  width: 100%;
+  max-width: 720px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.menu-copy {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.menu-subtitle {
+  color: var(--ink-faint);
+  font-size: 0.9rem;
+  margin-top: -1.5rem;
+  margin-bottom: 2rem;
+  text-transform: uppercase;
+  letter-spacing: 0.2rem;
+}
+
+.menu-tip {
+  color: #79a;
+  font-size: 0.9rem;
+}
+
+.menu-note {
+  color: #866;
+  font-size: 0.85rem;
+}
+
+.menu-pick {
+  margin-top: 1rem;
+  text-align: center;
+}
+
+.menu-pick .hud-title {
+  margin-bottom: 8px;
+}
+
+.btn-group {
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.diff-btn {
+  min-width: 150px;
+}
+
+.diff-btn small {
+  display: block;
+  margin-top: 6px;
+  font-size: 0.6rem;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--ink-faint);
+}
+
+.diff-btn:hover small {
+  color: #ccc;
+}
+
+.ghost-btn {
+  background: transparent;
+  border-color: transparent;
+  color: var(--ink-faint);
+  font-size: 0.85rem;
+}
+
+/* ---------------- Sound Puzzle: The Echo Stone ---------------- */
+#sound-puzzle {
+  position: absolute;
+  top: calc(90px + var(--sat));
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 20; /* above HUD (5) and touch controls (12) */
+  width: min(92vw, 400px);
+  padding: 16px 18px;
+  text-align: center;
+  background: rgba(8, 8, 12, 0.94);
+  border: 2px solid #446;
+  box-shadow:
+    0 0 30px #000,
+    0 0 18px rgba(80, 120, 255, 0.25);
+}
+
+.sp-title {
+  color: #8ab;
+  letter-spacing: 4px;
+  font-size: 0.85rem;
+  margin-bottom: 6px;
+}
+
+#sp-status {
+  color: #d1c7bd;
+  min-height: 1.4em;
+  font-size: 0.95rem;
+  margin-bottom: 10px;
+}
+
+#sp-dots {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  min-height: 14px;
+  margin-bottom: 12px;
+}
+
+.sp-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 1px solid #668;
+}
+
+.sp-dot.filled {
+  background: var(--sonar);
+  border-color: var(--sonar);
+  box-shadow: 0 0 8px var(--sonar);
+}
+
+.sp-buttons {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.sp-tone {
+  flex: 1;
+  padding: 14px 0;
+  font-size: 1.3rem;
+  letter-spacing: 1px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.sp-tone span {
+  font-size: 0.6rem;
+  letter-spacing: 2px;
+  color: #889;
+}
+
+/* "locked" = not your turn (listening / punished). Looks normal but ignores taps. */
+.sp-tone.locked {
+  pointer-events: none;
+}
+
+.sp-tone.flash {
+  animation: sp-flash 0.55s ease-out;
+}
+
+@keyframes sp-flash {
+  0% {
+    background: #2a5a8a;
+    border-color: #8cf;
+    color: #fff;
+    box-shadow: 0 0 24px #6af;
+  }
+  100% {
+    background: #111;
+    border-color: #444;
+    color: #ddd;
+    box-shadow: none;
+  }
+}
+
+.sp-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.sp-actions button {
+  padding: 8px 14px;
+  font-size: 0.8rem;
+}
+
+/* On phones, the joystick/buttons would sit under the panel — hide them while it's open */
+body.puzzle-open #touch-controls {
+  display: none !important;
+}
+
+/* ==========================================================================
+   TOUCH CONTROLS (phones & tablets)
+   Hidden by default; only shown on coarse-pointer / no-hover devices so
+   desktop mouse+keyboard players never see them. Also hidden outside actual
+   play so they never sit on top of the title, story or game-over screens.
+   ========================================================================== */
+#touch-controls {
+  display: none;
+  position: absolute;
+  inset: 0;
+  z-index: 12; /* above HUD (5) and canvas, below jumpscare (999) */
+  pointer-events: none; /* only the individual controls below opt back in */
+}
+
+@media (hover: none) and (pointer: coarse) {
+  body[data-state="PLAYING"] #touch-controls {
+    display: block;
+  }
+}
+
+/* --- Floating joystick ---------------------------------------------------
+   The zone is the whole left half of the screen (a big, forgiving target).
+   The ring rests bottom-left and jumps under the thumb when touched. */
+#touch-joystick-zone {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 48%;
+  pointer-events: auto;
+  touch-action: none;
+}
+
+#touch-joystick-base {
+  position: absolute;
+  left: calc(var(--edge) + var(--sal) + 8px);
+  bottom: calc(var(--edge) + var(--sab));
+  width: var(--joy);
+  height: var(--joy);
+  border-radius: 50%;
+  border: 1.5px solid rgba(220, 220, 220, 0.28);
+  /* concentric sonar rings */
+  background:
+    radial-gradient(
+      circle,
+      transparent 0 30%,
+      rgba(255, 255, 255, 0.1) 30.5% 31.5%,
+      transparent 32% 60%,
+      rgba(255, 255, 255, 0.06) 60.5% 61.5%,
+      transparent 62%
+    ),
+    rgba(255, 255, 255, 0.04);
+  opacity: 0.75;
+  transition: opacity 0.15s ease;
+}
+
+#touch-joystick-zone.active #touch-joystick-base {
+  opacity: 1;
+  border-color: rgba(255, 120, 120, 0.55);
+}
+
+#touch-joystick-knob {
+  position: absolute;
+  width: 42%;
+  height: 42%;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 35% 30%,
+    rgba(255, 140, 140, 0.55),
+    rgba(204, 51, 51, 0.35)
+  );
+  border: 2px solid rgba(255, 120, 120, 0.6);
+  box-shadow: 0 0 14px rgba(204, 51, 51, 0.3);
+}
+
+#touch-joystick-zone.active #touch-joystick-knob {
+  background: radial-gradient(
+    circle at 35% 30%,
+    rgba(255, 160, 160, 0.8),
+    rgba(204, 51, 51, 0.6)
+  );
+}
+
+/* --- Action cluster (right thumb) ---------------------------------------- */
+#touch-action-buttons {
+  position: absolute;
+  right: calc(var(--edge) + var(--sar) + 4px);
+  bottom: calc(var(--edge) + var(--sab));
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 12px;
+  pointer-events: none; /* gaps between buttons must not swallow touches */
+}
+
+#touch-item-buttons,
+.touch-main-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+}
+
+.touch-btn {
+  position: relative;
+  pointer-events: auto;
+  touch-action: none;
+  border-radius: 50%;
+  border: 2px solid rgba(200, 200, 200, 0.4);
+  background: rgba(20, 20, 20, 0.55);
+  color: #eee;
+  font-family: inherit;
+  letter-spacing: 1px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 2px;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    transform 0.08s ease,
+    background 0.1s ease,
+    border-color 0.1s ease;
+}
+
+.touch-btn svg {
+  width: 46%;
+  height: 46%;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.touch-btn:active {
+  transform: scale(0.94);
+  background: rgba(204, 51, 51, 0.5);
+  border-color: #f66;
+}
+
+#touch-interact-btn {
+  width: var(--btn-use);
+  height: var(--btn-use);
+  font-size: 0.75rem;
+  font-weight: bold;
+}
+
+#touch-pulse-btn {
+  width: var(--btn-echo);
+  height: var(--btn-echo);
+  font-size: 0.62rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  border-color: rgba(204, 51, 51, 0.65);
+  box-shadow:
+    0 0 16px rgba(204, 51, 51, 0.25),
+    inset 0 0 12px rgba(204, 51, 51, 0.18);
+  color: #f5c9c9;
+}
+
+#touch-pulse-btn svg {
+  width: 52%;
+  height: 52%;
+}
+
+/* Sonar ripple that radiates out of the ECHO button on every press */
+#touch-pulse-btn::after {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 110, 110, 0.9);
+  opacity: 0;
+  pointer-events: none;
+}
+
+#touch-pulse-btn.ping::after {
+  animation: echo-ping 0.7s ease-out;
+}
+
+@keyframes echo-ping {
+  0% {
+    transform: scale(1);
+    opacity: 0.9;
+  }
+  100% {
+    transform: scale(1.9);
+    opacity: 0;
+  }
+}
+
+.touch-btn.small {
+  width: var(--btn-item);
+  height: var(--btn-item);
+}
+
+.touch-btn.small svg {
+  width: 52%;
+  height: 52%;
+}
+
+.touch-count {
+  position: absolute;
+  right: -3px;
+  top: -3px;
+  min-width: 17px;
+  height: 17px;
+  padding: 0 4px;
+  border-radius: 9px;
+  background: #400;
+  border: 1px solid var(--blood);
+  color: #fff;
+  font-size: 0.62rem;
+  line-height: 15px;
+  text-align: center;
+  letter-spacing: 0;
+}
+
+/* Nothing to use: dim the button but keep it tappable (the game explains why) */
+.touch-btn.small.empty {
+  opacity: 0.4;
+}
+
+.touch-btn.small.empty .touch-count {
+  background: #111;
+  border-color: #555;
+  color: #999;
+}
+
+/* ==========================================================================
+   COMPACT LAYOUT — short screens (phones in landscape, small windows)
+   ========================================================================== */
+@media (max-height: 520px) {
+  :root {
+    --edge: 10px;
+  }
+
+  h1 {
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+  }
+
+  h2 {
+    font-size: 1.2rem;
+    margin-bottom: 0.6rem;
+  }
+
+  p {
+    font-size: 0.8rem;
+    line-height: 1.4;
+    margin-bottom: 0.6rem;
+  }
+
+  button {
+    padding: 8px 16px;
+    font-size: 0.9rem;
+  }
+
+  /* HUD: small readouts tucked in the corners */
+  .hud-top {
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    gap: 6px;
+    /* leave the top-right corner to the system buttons */
+    max-width: calc(100% - 140px);
+  }
+
+  .hud-box {
+    padding: 4px 8px;
+  }
+
+  .hud-title {
+    font-size: 0.55rem;
+    margin-bottom: 1px;
+  }
+
+  .hud-value {
+    font-size: 0.85rem;
+  }
+
+  .inv-slot {
+    width: 36px;
+    height: 36px;
+    font-size: 0.6rem;
+  }
+
+  .inventory-bar {
+    gap: 6px;
+    padding: 5px;
+  }
+
+  #controls-hint {
+    font-size: 0.6rem;
+  }
+
+  .energy-bar-track {
+    width: clamp(110px, 30vh, 170px);
+    height: 9px;
+  }
+
+  #system-buttons {
+    top: calc(var(--edge) + var(--sat));
+  }
+
+  .sys-btn {
+    padding: 6px 9px;
+  }
+
+  /* icon-only: the speaker glyph already shows muted / not muted */
+  .sys-label {
+    display: none;
+  }
+
+  .sys-btn svg {
+    width: 17px;
+    height: 17px;
+  }
+
+  #toast {
+    /* sits just under the HUD row so it never covers a readout */
+    top: calc(var(--edge) + var(--sat) + 44px);
+    max-width: min(60vw, 480px);
+    padding: 6px 12px;
+    font-size: 0.75rem;
+  }
+
+  #interact-prompt {
+    bottom: calc(46px + var(--sab));
+    padding: 5px 12px;
+    font-size: 0.75rem;
+  }
+
+  #caption {
+    bottom: calc(76px + var(--sab));
+    font-size: 0.8rem;
+  }
+
+  /* Menu: story on the left, difficulty on the right */
+  .menu-shell {
+    max-width: none;
+    display: grid;
+    grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+    gap: 24px;
+    align-items: center;
+  }
+
+  .menu-copy {
+    align-items: flex-start;
+  }
+
+  .menu-copy h1,
+  .menu-subtitle {
+    align-self: center;
+  }
+
+  .menu-copy p {
+    text-align: left;
+  }
+
+  .menu-subtitle {
+    margin-top: -0.7rem;
+    margin-bottom: 0.8rem;
+  }
+
+  .menu-pick {
+    margin-top: 0;
+  }
+
+  .menu-pick .btn-group {
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 6px;
+  }
+
+  .diff-btn {
+    min-width: 0;
+    width: 100%;
+    padding: 7px 12px;
+    font-size: 0.9rem;
+  }
+
+  .diff-btn small {
+    margin-top: 3px;
+  }
+
+  /* Echo Stone: one tight strip that leaves the maze visible */
+  #sound-puzzle {
+    top: calc(var(--edge) + var(--sat));
+    padding: 10px 14px;
+    width: min(70vw, 400px);
+  }
+
+  #sp-status {
+    margin-bottom: 6px;
+    font-size: 0.85rem;
+  }
+
+  #sp-dots {
+    margin-bottom: 8px;
+  }
+
+  .sp-tone {
+    padding: 10px 0;
+    font-size: 1.1rem;
+  }
+
+  #note-modal {
+    padding: 16px 20px;
+    line-height: 1.5;
+  }
+
+  #note-text {
+    font-size: 0.85rem;
+    margin-bottom: 12px;
+  }
+
+  .settings-box {
+    padding: 14px 18px;
+  }
+
+  .settings-group {
+    margin-bottom: 10px;
+  }
+}
+
+/* Very short screens (small phones in landscape): keep only what's essential */
+@media (max-height: 380px) {
+  .menu-note,
+  .menu-tip {
+    display: none;
+  }
+
+  h1 {
+    font-size: 1.5rem;
+    margin-bottom: 0.6rem;
+  }
+
+  .menu-subtitle {
+    margin-bottom: 0.5rem;
+  }
+}
+
+/* Touch devices don't have a keyboard: drop the key cheat-sheet and the
+   inventory strip (the item buttons carry the counts instead) to keep the
+   maze view clear. */
+@media (hover: none) and (pointer: coarse) {
+  .hud-controls,
+  .inventory-bar {
+    display: none;
+  }
+
+  .hud-bottom {
+    justify-content: center;
+  }
+
+  /* the key hint in "Sound Energy [SPACE]" is meaningless on a phone */
+  .hud-energy .hud-title {
+    text-align: center;
+  }
+
+  /* Comfortable minimum touch target for panel buttons */
+  .settings-actions button,
+  .sp-actions button,
+  #note-close {
+    min-height: 40px;
+  }
+}
+
+/* ==========================================================================
+   ROTATE GATE — touch devices held upright get nothing but this screen.
+   ========================================================================== */
+#rotate-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 2000; /* above the jumpscare (999) */
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 24px;
+  text-align: center;
+  background: radial-gradient(
+      ellipse at 50% 38%,
+      rgba(90, 10, 10, 0.55),
+      transparent 65%
+    ),
+    #000;
+  touch-action: none;
+}
+
+@media (orientation: portrait) and (hover: none) and (pointer: coarse) {
+  #rotate-overlay {
+    display: flex;
+  }
+}
+
+#rotate-overlay h2 {
+  color: var(--ink);
+  font-size: 1.35rem;
+  letter-spacing: 0.04rem;
+  margin: 1.4rem 0 0.7rem;
+}
+
+#rotate-overlay p {
+  max-width: 30ch;
+  font-size: 0.95rem;
+  margin-bottom: 0.8rem;
+}
+
+#rotate-overlay .rotate-tip {
+  color: var(--ink-faint);
+  font-size: 0.8rem;
+}
+
+.rotate-art {
+  position: relative;
+  width: 132px;
+  height: 132px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.rotate-art .ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1.5px solid rgba(204, 51, 51, 0.7);
+  opacity: 0;
+  animation: rotate-ring 3.2s ease-out infinite;
+}
+
+.rotate-art .r2 {
+  animation-delay: 1.05s;
+}
+
+.rotate-art .r3 {
+  animation-delay: 2.1s;
+}
+
+@keyframes rotate-ring {
+  0% {
+    transform: scale(0.35);
+    opacity: 0.85;
+  }
+  100% {
+    transform: scale(1.15);
+    opacity: 0;
+  }
+}
+
+.rotate-art .phone {
+  position: relative;
+  width: 54px;
+  height: 90px;
+  fill: #0d0d0d;
+  stroke: #d8d8d8;
+  stroke-width: 2.4;
+  transform-origin: 50% 50%;
+  animation: rotate-phone 3.2s ease-in-out infinite;
+}
+
+.rotate-art .phone .screen {
+  fill: #1a0505;
+  stroke: rgba(204, 51, 51, 0.7);
+  stroke-width: 1.2;
+}
+
+.rotate-art .phone .dot {
+  fill: #d8d8d8;
+  stroke: none;
+}
+
+@keyframes rotate-phone {
+  0%,
+  18% {
+    transform: rotate(0deg);
+  }
+  50%,
+  82% {
+    transform: rotate(-90deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+/* ---------------- Reduced motion ---------------- */
+@media (prefers-reduced-motion: reduce) {
+  #interact-prompt {
+    animation: none;
+  }
+
+  .rotate-art .ring {
+    animation: none;
+    opacity: 0.4;
+    transform: scale(0.9);
+  }
+
+  .rotate-art .phone {
+    animation: none;
+    transform: rotate(-90deg);
+  }
+
+  #touch-pulse-btn.ping::after {
+    animation: none;
+  }
+
+  button {
+    transition: none;
+  }
+}

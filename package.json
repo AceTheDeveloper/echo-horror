@@ -1,0 +1,17 @@
+{
+  "name": "echohorror",
+  "version": "1.0.0",
+  "description": "EchoHorror: The Echo Maze — a sound-driven horror maze game that runs in the browser.",
+  "private": true,
+  "scripts": {
+    "start": "node scripts/serve.js",
+    "test": "node --test \"test/*.test.js\"",
+    "lint": "eslint index.js scripts test",
+    "check": "node --check index.js && npm test"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.0.0",
+    "eslint": "^9.0.0",
+    "globals": "^15.0.0"
+  }
+}

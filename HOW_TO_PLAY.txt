@@ -1,0 +1,675 @@
+==============================================================================
+  ECHOHORROR: THE ECHO MAZE
+  A complete, plain-language guide to how the game works
+==============================================================================
+
+You don't need to know anything about games or computers to read this.
+Everything is explained from scratch, in the order you would meet it.
+
+Contents
+  1.  What the game is about
+  2.  The big idea: you are blind, and sound is your only light
+  3.  Your goal on every level
+  4.  Controls (keyboard, phone, and how to change them)
+  5.  The screen: what every box and bar means
+  6.  The Sound Pulse (your echo) and Sound Energy
+  7.  The hunters (the monsters)
+  8.  Every item and object you can find
+  9.  The Echo Stone puzzle, step by step
+ 10.  The Memory Shrine
+ 11.  Broken glass
+ 12.  The exit gate and the final escape
+ 13.  The three difficulty levels
+ 14.  How the six levels get harder
+ 15.  Dying, retrying, pausing and saving
+ 16.  Settings and accessibility
+ 17.  The story
+ 18.  Survival tips
+ 19.  What was fixed and added in this update
+ 20.  Honest limits: what has and hasn't been checked
+
+
+------------------------------------------------------------------------------
+1.  WHAT THE GAME IS ABOUT
+------------------------------------------------------------------------------
+
+EchoHorror is a horror game that you play in a web browser. You are trapped
+in a stone maze deep underground. It is pitch black. There is no map.
+
+Monsters live in the maze. They are blind too. They cannot see you - they
+find you only by listening. Every noise you make can bring them to you.
+
+There are six levels. Each level is a new, randomly built maze. To finish a
+level you collect key pieces, walk to the exit gate in the far corner, and
+survive while it opens.
+
+The game is meant to be played with headphones. A lot of the danger is
+something you HEAR before you ever see it.
+
+
+------------------------------------------------------------------------------
+2.  THE BIG IDEA: YOU ARE BLIND, AND SOUND IS YOUR ONLY LIGHT
+------------------------------------------------------------------------------
+
+Most of the screen is black. You only see three things:
+
+  * A very small, dim circle of "flashlight" around you. It faintly shows
+    the walls and items right next to you. It always works and it makes no
+    noise. (It is bigger on Easy and smaller on Hard.)
+
+  * The maze appearing for a moment when you send out an ECHO. An echo is a
+    ring of sound that spreads out from you. Wherever the ring reaches, the
+    walls, items, monsters and the exit light up for a couple of seconds,
+    then fade back into darkness.
+
+  * Light from a candle, if you place one (see the items section).
+
+Here is the catch, and it is the heart of the whole game:
+
+      EVERY ECHO IS ALSO A LOUD NOISE.
+
+When you send an echo, any monster inside the ring's reach hears it and
+comes to the spot where you made the sound. So you constantly choose between
+"I need to see where I am going" and "I don't want to be heard."
+
+Silence keeps you alive. Sound lets you see. You need both.
+
+
+------------------------------------------------------------------------------
+3.  YOUR GOAL ON EVERY LEVEL
+------------------------------------------------------------------------------
+
+  1. You start in the top-left corner of the maze.
+  2. Collect the required number of KEY PIECES (the count is shown at the
+     top of the screen as "Keys Found"). One of them is always locked inside
+     a humming "Echo Stone" - you have to solve its sound puzzle to get it.
+     The rest are lying around the maze.
+  3. Walk to the EXIT GATE in the far bottom-right corner.
+  4. Press the interact key at the gate. It starts to open - but the noise
+     wakes EVERY monster in the maze and they all rush to you. You must
+     stay standing at the gate for 8 seconds while it opens.
+  5. When it opens you go on to the next level. Finish level 6 and you
+     escape... or do you? (See the story.)
+
+How many key pieces you need:
+
+      Level 1: 3      Level 2: 4      Level 3: 4
+      Level 4: 5      Level 5: 5      Level 6: 5
+
+The maze gets bigger with every level:
+
+      Level 1: 11 x 11 squares      Level 4: 17 x 17
+      Level 2: 13 x 13              Level 5: 19 x 19
+      Level 3: 15 x 15              Level 6: 21 x 21
+
+You start every level with a fresh inventory: nothing carries over from the
+previous level except the knowledge in your head.
+
+
+------------------------------------------------------------------------------
+4.  CONTROLS
+------------------------------------------------------------------------------
+
+KEYBOARD (default keys)
+
+  W A S D  or  arrow keys ... walk
+  SPACE ..................... send an echo (costs Sound Energy)
+  E ......................... interact (touch a stone, use the gate, close a note)
+  1 ......................... use a Heart Relic
+  2 ......................... use an Eye Totem
+  C ......................... place a candle
+  P  or  ESC ................ pause / resume
+
+On the Echo Stone puzzle screen: 1, 2, 3 play the LOW, MID, HIGH notes,
+R replays the melody, and E or ESC leaves the puzzle.
+
+On the title screen: SPACE or click to start. On the difficulty screen:
+1 = Easy, 2 = Medium, 3 = Hard, C = continue a saved game, ESC = go back.
+After dying: SPACE or click to try again.
+
+CHANGING THE KEYS
+Open Settings (the gear button in the top-right corner). Under "Keys" click
+the key next to an action, then press the new key. If the key is already
+used for something else, the two actions simply swap. Walking always stays
+on WASD / arrow keys, and ESC / Enter can't be reassigned. "Reset keys"
+puts everything back to normal. Your choices are remembered.
+
+PHONE OR TABLET
+On a touchscreen the controls appear automatically:
+  * A round joystick at the bottom-left - drag it to walk.
+  * A big ECHO button - same as SPACE.
+  * An "E" button - same as the interact key.
+  * Three small buttons HRT / EYE / CNDL - Heart Relic, Eye Totem, Candle.
+  * The pause and settings buttons at the top-right.
+
+
+------------------------------------------------------------------------------
+5.  THE SCREEN: WHAT EVERY BOX AND BAR MEANS
+------------------------------------------------------------------------------
+
+TOP ROW
+  Level ............ which level you are on, out of 6.
+  Keys Found ....... key pieces you hold, out of the number you need.
+  Threat Level ..... how much danger you are in right now:
+        LOW ............... nobody is looking for you.
+        SUSPICIOUS ........ at least one monster heard something and is
+                            walking over to check.
+        HIGH (HUNTED) ..... at least one monster is actively chasing you.
+
+BOTTOM ROW
+  Inventory ........ four boxes with a number in the corner:
+        KEY (key pieces), CNDL (candles), HRT (Heart Relics), EYE (Eye
+        Totems). A box lights up with a red border when it is usable.
+  Sound Energy ..... a bar that shows how many echoes you can afford (next
+                     section). Green = plenty, yellow = getting low,
+                     red = almost empty.
+  Controls ......... a reminder of your current keys.
+
+TOP-RIGHT BUTTONS
+  Pause, Settings (gear) and Sound On/Muted. Muting is remembered.
+
+MESSAGES
+  Short messages appear near the top ("Key piece found (2/3)", "The gate is
+  sealed..."). The first time something new happens, a longer tip appears
+  once - for example the first time you pick up a candle. You will never see
+  the same tip twice unless you press "Show hints again" in Settings.
+
+THE "PRESS E" PROMPT
+  When you stand close to the gate, an Echo Stone or a Memory Shrine, a small
+  box near the bottom tells you which key to press.
+
+
+------------------------------------------------------------------------------
+6.  THE SOUND PULSE (YOUR ECHO) AND SOUND ENERGY
+------------------------------------------------------------------------------
+
+Pressing the echo key sends out a ring of sound. It spreads out very fast,
+lights up everything it passes over, and the lit-up picture slowly fades.
+
+  * How far it reaches, and how long the picture lasts, depends on the
+    difficulty (see section 13). On Medium it reaches about 3 to 4 maze
+    squares in every direction and the picture lasts about 3 seconds.
+  * Any monster within the ring's reach HEARS it and comes to investigate
+    the spot where you sent it.
+
+SOUND ENERGY
+Echoes are not free. You have a bar of 100 Sound Energy and each echo you
+send costs some of it. It slowly refills by itself.
+
+              Cost per echo   Refills          Echoes from a full bar
+   Easy            20        18 per second           5
+   Medium          30        13 per second           3
+   Hard            40         9 per second           2
+
+If you press the key without enough energy you hear a dull buzz and the bar
+flashes - nothing is sent (and, luckily, nothing is heard either).
+
+FREE, AUTOMATIC ECHOES
+Some things send an echo for you, at no energy cost. They are noisy and they
+DO alert monsters, so be careful:
+  * The first echo when a level begins (a small tutorial echo).
+  * Picking up any item (a small one).
+  * Stepping on broken glass (a small one).
+  * Using a Heart Relic or an Eye Totem.
+  * Getting a wrong note on the Echo Stone.
+  * The Echo Stone shattering when you solve it (a loud one).
+  * Grabbing a lure key (a HUGE one).
+  * Starting to open the exit gate (the biggest one of all).
+
+YOUR FOOTSTEPS
+Walking makes a very quiet noise. Monsters only notice it if they are almost
+right next to you - so never worry about walking; worry about echoing.
+
+
+------------------------------------------------------------------------------
+7.  THE HUNTERS (THE MONSTERS)
+------------------------------------------------------------------------------
+
+The hunters are red-eyed blood monsters. They cannot see. They react only to
+sound. A hunter is always in one of these moods:
+
+PROWLING (patrol)
+  Nobody has bothered it. It wanders slowly between random spots in the
+  maze, walking along the real corridors (never through walls), at less
+  than half of its normal speed. You can hear its heavy footsteps.
+
+INVESTIGATING
+  It heard an ordinary noise - like one of your echoes. It walks to the
+  exact spot where the noise happened, stands there for about 3 seconds
+  "looking around", then goes back to prowling. If it hears another noise
+  in the meantime, it switches to the new spot.
+  If you are standing at that spot when it arrives, you are caught.
+
+HUNTING (chase)
+  It heard a LOUD noise - the lure key or the gate. It runs straight at you
+  and keeps tracking wherever you move, for 8 seconds. Every time you make
+  a noise nearby, or if it gets right beside you, that timer refreshes. If
+  you manage to get away and stay quiet, it loses your trail and goes to
+  check the last place it heard you (investigating).
+
+STAGGERING
+  It just touched a candle flame (section 8). It recoils and freezes for
+  about 2.5 seconds, then wanders off, having forgotten about you.
+
+DEAD
+  It burned twice. It collapses and vanishes a few seconds later.
+
+BEING CAUGHT
+  If a hunter touches you, it's over: a jumpscare, a scream, and "YOU DIED".
+  The only things that stop this are:
+    * a Heart Relic's protection (6 seconds), or
+    * the hunter being staggering from a burn.
+
+HOW FAST THEY ARE
+  Compared with you, a hunter on Easy walks at about half your speed; on
+  Medium about three quarters; on Hard exactly your speed. They get about
+  4% faster with each level, and 30% faster during the final gate escape.
+  You cannot outrun a Hard hunter for long - you have to be clever.
+
+HOW YOU HEAR THEM
+  Their footsteps are heavy and dragging. The closer one is, the louder and
+  clearer it gets. If it is on your left, you hear it in your left ear.
+  You can hear them from about 6 squares away. A hunter who is chasing sounds
+  louder and stomps faster than one who is prowling - the rhythm itself is a
+  warning. If a hunter gets very close (about 2 squares), something also
+  whispers right into your ear.
+
+HOW MANY
+  Easy: 1 hunter. Medium: 2. Hard: 3. Deeper levels add more (section 14).
+
+
+------------------------------------------------------------------------------
+8.  EVERY ITEM AND OBJECT YOU CAN FIND
+------------------------------------------------------------------------------
+
+Every level scatters these around. You walk over an item to pick it up. Each
+pickup makes a small echo (and a little noise), so grabbing things is not
+quite free.
+
+KEY PIECE (a small gold key)
+  You need a certain number of them (section 3) to open the gate. Some
+  "keys" are actually LURES - see below. The last key piece isn't lying
+  around at all: it's inside the Echo Stone.
+
+LURE KEY (looks EXACTLY like a real key)
+  A trap the maze planted. You can't tell it from a real key by looking.
+  When you pick it up: a monster growls, a huge echo goes off, and every
+  hunter within about 10 squares starts HUNTING you. There is one on every
+  level. Reading the notes (below) hints that "some keys are lures." The
+  only defence is to be ready to run, use a candle, or use a Heart Relic.
+
+CANDLE  (you find 2 per level, and the Memory Shrine gives one more)
+  Press the candle key to put a lit candle on the floor where you stand.
+    * It burns for 18 seconds, then goes out.
+    * It lights a warm circle of about 1.5 squares around it: you see the
+      walls there, and any hunter standing inside the light.
+    * Any hunter that TOUCHES the flame is scorched: it staggers for
+      2.5 seconds and forgets about you. Burn the same hunter twice and it
+      dies. After a burn, that hunter can't be burned again for about
+      4 seconds, so one candle can't kill in a single sweep.
+    * Lighting a candle makes a whisper and a bit of noise, and wakes
+      hunters within about 2.5 squares. That makes it a great BAIT:
+      light one, hurry away, and let the noise draw a hunter into it.
+  Candles don't carry over to the next level. Use them or lose them.
+
+HEART RELIC  (you START each level with 1; one more may be lying around)
+  Press the Heart key. For 6 seconds you cannot be caught, and there is a
+  red ring around you. The price: your heartbeat pounds loudly, roughly twice
+  a second, and every beat pulls hunters within about 4 squares toward you.
+  It's a panic button, not a stealth tool. You can't use another while one
+  is active.
+
+EYE TOTEM  (one per level)
+  Press the Eye key. For 10 seconds all your echoes reach 50% farther, and
+  you immediately send one big echo. Great for scouting the maze - but the
+  bigger the echo, the more monsters hear it.
+
+CURSED NOTE  (one per level - a page of the story)
+  Reading it freezes the game while the page is open. There are six pages,
+  one for each level, that explain the rules and the lore. Close it with the
+  interact key.
+
+ECHO STONE  (one per level - section 9)
+  A small standing slab with three glowing dots. It hums so you can find it
+  by ear, within about 5 squares. Solving it gives you a key piece.
+
+MEMORY SHRINE  (one per level - section 10)
+  A violet diamond that shows you the way to the exit.
+
+BROKEN GLASS  (several hidden per level - section 11)
+
+EXIT GATE  (the far bottom-right corner - section 12)
+
+
+------------------------------------------------------------------------------
+9.  THE ECHO STONE PUZZLE, STEP BY STEP
+------------------------------------------------------------------------------
+
+It is like the old game "Simon Says", played with sound.
+
+  1. Listen for a faint, glassy humming. It gets louder as you get closer,
+     and it comes from the side where the stone is. (If you turn on "Visual
+     sound cues" in Settings, a blue arrow points toward it.)
+  2. Stand right next to the stone and press the interact key.
+  3. The stone plays a melody of LOW, MID and HIGH notes and flashes the
+     matching buttons. Just listen.
+  4. When it says "Your turn", repeat the melody using keys 1 (LOW),
+     2 (MID), 3 (HIGH), or by tapping the buttons. The dots on the panel fill
+     in as you get notes right.
+  5. Get every note right and the stone gives you a KEY PIECE, then shatters
+     with a loud crash (a big echo - be ready).
+
+How long is the melody?
+     Easy and Medium: 3 notes.  Hard: 4 notes.
+     Then add 1 more note on levels 3 and 4, and 2 more on levels 5 and 6.
+
+The catch:
+  * While you are at the stone you cannot walk - but the hunters keep
+    moving! You can be caught while solving it.
+  * Each correct note is a little noise (hunters within about 2 squares may
+    notice).
+  * A WRONG note makes the stone scream, a whisper sounds in your ear, an
+    echo lights up the maze, hunters come to investigate, and the melody
+    plays again from the start.
+  * You can press R to hear the melody again, or leave with E / ESC and come
+    back later. You can't get stuck.
+
+This puzzle is REQUIRED: one of the key pieces you need is only available
+here.
+
+
+------------------------------------------------------------------------------
+10. THE MEMORY SHRINE
+------------------------------------------------------------------------------
+
+A violet diamond glowing softly. Press the interact key next to it, once.
+
+  * A violet, moving dotted trail is drawn on the floor from where you are
+    standing all the way to the EXIT GATE, following the real corridors. It
+    stays for 15 seconds and fades out.
+  * You get a free candle.
+  * A big, quiet flash lights up the maze. Unlike normal echoes, this one
+    does NOT alert any hunter.
+  * After that the shrine goes dull grey - it works only once.
+
+Tip: it shows the way from wherever you stand, so the best time to use it is
+when you already have most of your key pieces.
+
+
+------------------------------------------------------------------------------
+11. BROKEN GLASS
+------------------------------------------------------------------------------
+
+Shards of glass are hidden on the floor. You cannot see them in the dark
+except as a faint glitter when you are very close, or when an echo passes
+over them. If you walk over some, it crunches: a small echo, and monsters
+nearby come to investigate. A shard only crunches once. A level has 4 pieces
+on level 1, growing up to 14 pieces on level 6.
+
+
+------------------------------------------------------------------------------
+12. THE EXIT GATE AND THE FINAL ESCAPE
+------------------------------------------------------------------------------
+
+The gate is in the bottom-right corner - the opposite side of the maze from
+where you start. You can't see it in the dark unless an echo reaches it, the
+flashlight is close to it, or it is opening.
+
+  * Press the interact key at the gate WITHOUT enough keys: a message tells
+    you how many key pieces you still need. Nothing else happens.
+  * Press it WITH enough keys: the gate begins to unseal. A huge echo goes
+    off, EVERY living hunter in the maze starts hunting you and will never lose
+    your trail, and they move 30% faster.
+  * You must stay next to the gate for 8 seconds. A ring around the gate
+    fills up and a number counts down.
+  * If you step away, the ring drains (a bit faster than it filled). Come
+    back and it fills again.
+  * When the ring is full the gate opens and you move on to the next level.
+
+So the last 8 seconds of every level is a stand-off. Prepare before you press
+it: put candles on the floor around the gate, keep a Heart Relic ready, and
+know which way the hunters will come from. On small mazes they arrive fast; on
+big ones you may get lucky.
+
+
+------------------------------------------------------------------------------
+13. THE THREE DIFFICULTY LEVELS
+------------------------------------------------------------------------------
+
+Sizes below are in maze squares (one corridor square is the width of a
+corridor).
+
+                                 EASY      MEDIUM      HARD
+   Hunters (level 1)               1          2          3
+   Hunter speed vs. yours         50%        73%        100%
+   How well hunters hear          poor      normal     sharp
+   Flashlight size            ~1.8 squares  ~1.4      ~1.0
+   Echo reach                 ~4.7 squares  ~3.5      ~2.5
+   Echo picture lasts            4.0 s      2.8 s      1.8 s
+   Energy cost of an echo         20         30         40
+   Energy refill per second       18         13          9
+   Echo Stone melody (level 1)   3 notes    3 notes    4 notes
+
+"How well hunters hear": a hunter notices an echo if it is within about
+3 to 3.5 squares of you on every difficulty. On Easy your echo is big but
+poorly heard; on Hard it is small but sharply heard.
+
+
+------------------------------------------------------------------------------
+14. HOW THE SIX LEVELS GET HARDER
+------------------------------------------------------------------------------
+
+  * The maze grows from 11 x 11 to 21 x 21.
+  * You need more key pieces (3, then 4, then 5).
+  * The Echo Stone melody gets longer (+1 note on levels 3-4, +2 on 5-6).
+  * More hunters join: +1 on levels 3 and 4, +2 on levels 5 and 6.
+    (Level 6 on Hard has 5 hunters.)
+  * Every hunter is about 4% faster per level (+20% by level 6).
+  * The creepy whispers in the walls become more frequent as you go deeper,
+    and twice as frequent while you are being hunted.
+  * More broken glass.
+
+
+------------------------------------------------------------------------------
+15. DYING, RETRYING, PAUSING AND SAVING
+------------------------------------------------------------------------------
+
+DYING
+  When a hunter catches you there is a loud jumpscare, then "YOU DIED". Press
+  SPACE or click to try again. Retrying builds a BRAND-NEW random maze for the
+  same level and you start with a fresh inventory. Your death is counted
+  ("Times caught"), and shown on the screen.
+
+PAUSING
+  Press P or ESC, or the pause button. Everything freezes and all sound stops.
+  Press the same key or click to resume. The game also pauses by itself if you
+  switch to another window or tab, so nobody gets caught while looking away.
+  (You cannot pause while reading a note or solving a puzzle - just leave those
+  first.)
+
+SAVING
+  The game saves by itself every time you clear a level. Next time you open the
+  game the title screen shows "PRESS C TO CONTINUE - LEVEL X". Continuing skips
+  the story and starts you at the beginning of the level you had reached, on the
+  same difficulty. If you die and then close the game, you'll continue from
+  the start of that level.
+  The game also remembers:
+    * your settings, key choices, and mute setting,
+    * the deepest level you ever reached (shown on the title screen),
+    * your best finishing time on each difficulty,
+    * which tutorial tips you have already seen.
+  All of this is kept in your own web browser. It stays on your computer
+  or phone; nothing is sent anywhere. If you clear your browser's stored data,
+  it is forgotten.
+
+
+------------------------------------------------------------------------------
+16. SETTINGS AND ACCESSIBILITY
+------------------------------------------------------------------------------
+
+Press the gear button (top-right). Opening it pauses the game.
+
+  VOLUME SLIDERS
+    Music ............ the slow, sad background tune during the story
+    Whispers ......... the creepy voices in the walls
+    Footsteps ........ yours and the hunters'
+    Echo Stone sounds  the puzzle notes and humming
+    (Turn one to zero to silence just that sound.)
+
+  VISUAL SOUND CUES  (for players who can't hear well, or play muted)
+    When switched on:
+      * Small red arrows circle you and point toward hunters within about 6
+        squares. Brighter = closer.
+      * Small blue arrows point toward an unsolved Echo Stone.
+      * Text captions appear for important sounds, like "[Growl]",
+        "[Whispers]", "[Heavy footsteps]" and "[Humming]".
+
+  KEYS  - change any action's key (section 4).
+
+  SHOW HINTS AGAIN - replays the one-time tutorial tips.
+
+The gear can also be used from the title screen.
+
+
+------------------------------------------------------------------------------
+17. THE STORY
+------------------------------------------------------------------------------
+
+You are a university student researching urban legends for your thesis. You
+find an old tape recording about "The Echo Ritual Site" - an underground
+labyrinth where sound was once used to talk to unseen horrors. Curious, you
+travel deep into the woods to the coordinates on the tape.
+
+The moment you step inside, a heavy stone slab slams shut behind you. Total
+darkness. Total silence. You make a small sound - and for a heartbeat the
+walls glow, showing you the maze. You realise you have to collect the key
+pieces to unseal the exit... and that you are not alone.
+
+Along the way you find six torn pages, one on each level:
+  Page 1: the walls absorb sound and reflect light; silence blinds you, noise
+          brings them.
+  Page 2: earlier victims tried to mark the walls; the maze erases every trace.
+  Page 3: the Heart Relic holds them at bay, but its pulse is loud.
+  Page 4: don't trust every key - some are lures.
+  Page 5: candles draw whispers and burn the beasts; one key piece sleeps
+          inside a singing stone.
+  Page 6: the exit needs a violent shock to unseal, takes time to open, and
+          every monster will rush you. Do not leave the gate.
+
+THE ENDING
+When you finally get through the last gate, you step out into daylight. But
+then, from the darkness behind you, a voice calls your name. It is your own
+voice, begging for help. "The maze never lets anyone leave."
+
+After the ending there is a final screen with your statistics: difficulty,
+time in the maze (with your best time), how many times you were caught, and how
+many echoes you sent - plus credits.
+
+
+------------------------------------------------------------------------------
+18. SURVIVAL TIPS
+------------------------------------------------------------------------------
+
+  * Listen first. Before you echo, stop and listen for footsteps. If you hear
+    one close by, wait.
+  * Send fewer, better echoes. One good echo at a junction beats three panicky
+    ones. Remember each echo costs energy AND makes noise.
+  * Let the flashlight do the small work: it is silent. Use it to feel your
+    way along walls and spot items in a room.
+  * Find the Echo Stone early by following its hum. It also tells you roughly
+    where the maze's key areas are.
+  * Assume any key you find could be a lure. Keep an escape route in mind (and
+    a candle ready) before you pick up a key.
+  * Candles are both a weapon and a bait. Place one in a corridor, walk away
+    around a corner, then make a small noise so a hunter walks straight into it.
+  * Save your Heart Relic for emergencies and remember it is loud.
+  * Use the Memory Shrine when you already hold most of your keys.
+  * Before you open the gate, place candles around it, and have a Heart Relic
+    ready. You must hold it for 8 seconds.
+  * You can always step back and re-plan: a hunter who loses your trail goes
+    back to prowling.
+  * You can pause any time (P) to think.
+
+
+------------------------------------------------------------------------------
+19. WHAT WAS FIXED AND ADDED IN THIS UPDATE
+------------------------------------------------------------------------------
+
+Problems that were fixed
+  * The game ran about 2.4 times too fast on 144 Hz screens (and slower on
+    slow ones). Player and hunter speed now depend on real time, so the game
+    plays the same everywhere.
+  * Using a Heart Relic made every hunter in range growl dozens of times a
+    second. Growls are now limited, and the heartbeat happens about twice a
+    second.
+  * Echoes, dust and candle light from a previous level or attempt could still
+    show up in the next maze. Everything is now cleared at the start of a
+    level.
+  * You could slip through the tips (corners) of walls. Walls are now solid
+    all around you and around the hunters.
+  * Prowling hunters walked straight into walls and got stuck. They now follow
+    the corridors.
+  * Several leftover, unused pieces of the game were removed (a menu, some
+    asset lists, and an unused variable).
+  * The game no longer depends on the internet for its tile pictures: they
+    are now included in the folder. (An internet copy is kept only as a
+    backup.)
+
+Things that used to be missing and now exist
+  * Hunters can be fought: candles hurt them, and the "hurt" and "dying"
+    pictures that had always been in the art files are finally used.
+  * Real chasing: loud noises make hunters hunt you and track you for 8
+    seconds. Before this, a "chase" almost never happened.
+  * The final escape is now a real stand-off: you must hold the gate for 8
+    seconds. Before, you were already standing at the gate, so nothing
+    happened.
+  * Candles now do something. So does the Memory Shrine (it used to give
+    nothing).
+  * The Echo Stone is required (one key piece is locked inside), instead of
+    being optional.
+  * Feedback at the gate: it tells you when you still need key pieces.
+  * Levels scale better: more hunters and faster hunters deeper down.
+  * Saving and Continue, best level, best times, statistics, and a proper
+    ending / credits screen.
+  * Pause (with automatic pause when you leave the window).
+  * A Settings panel: volume sliders, remembered mute, and key rebinding.
+  * Accessibility: visual sound cues (arrows and captions).
+  * Phone buttons for Heart Relic, Eye Totem and Candle.
+  * Short one-time tutorial tips.
+  * One name everywhere: "EchoHorror".
+  * A README, a small local web server, automated tests, and a
+    code-quality check for the developer.
+
+
+------------------------------------------------------------------------------
+20. HONEST LIMITS: WHAT HAS AND HASN'T BEEN CHECKED
+------------------------------------------------------------------------------
+
+What was checked
+  * 23 automated tests run the real game code without a screen: they check
+    that mazes are always solvable, hunters behave, candles burn, the gate
+    counts down, saving works, pausing works, key rebinding works, and that
+    the game runs at the same speed at 60 and 144 frames per second. They were
+    run over 30 times in a row with no failures.
+  * The game was loaded in a real (headless) Edge browser and started
+    correctly: it reached level 1 with the hunters and the pictures loaded.
+  * The code passes the code-quality checker with no warnings.
+
+What was NOT checked
+  * Nobody has played it by hand start to finish yet. How scary, fair or fun
+    the new numbers feel (8 seconds at the gate, 8 seconds of chasing, candle
+    burn time, the number of hunters) is a matter of taste and may need
+    tweaking after real playtests. All these numbers are easy to change.
+  * The phone controls were not tried on a real phone - only the code path was
+    tested.
+  * The screen layout of the Settings panel on very small phones was not
+    inspected visually.
+  * The artists of the player and monster pictures are not recorded anywhere.
+    Before you share or sell the game, find out who made them and check that
+    their licence allows it (see README.md).
+  * Your keyboard-key choices only apply to actions; walking is always
+    WASD / arrows.
+
+==============================================================================
+  Have fun - and keep quiet.
+==============================================================================
